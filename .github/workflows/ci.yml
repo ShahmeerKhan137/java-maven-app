@@ -1,10 +1,8 @@
-name: Application CI
+name: App CI
 
 on:
   push:
 
 jobs:
-
-  call-central:
-
+  call-devops:
     uses: ShahmeerKhan137/devops-platform/.github/workflows/smart-ci.yml@main
