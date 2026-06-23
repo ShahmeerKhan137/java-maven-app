@@ -6,3 +6,4 @@ on:
 jobs:
   call-devops:
     uses: ShahmeerKhan137/devops-platform/.github/workflows/smart-ci.yml@main
+    secrets: inherit
