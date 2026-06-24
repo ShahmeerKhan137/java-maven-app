@@ -4,6 +4,9 @@ on:
   push:
 
 jobs:
-  call-devops:
+
+  pipeline:
+
     uses: ShahmeerKhan137/devops-platform/.github/workflows/smart-ci.yml@main
+
     secrets: inherit
