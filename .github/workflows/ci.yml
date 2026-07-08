@@ -1,58 +1,18 @@
-name: "Smart Centralized CI Orchestrator"
+name: App Continuous Integration
 
 on:
-  workflow_call:
-    inputs:
-      enable_checkout:
-        description: 'Toggle Checkout stage'
-        required: false
-        type: boolean
-        default: true
-      enable_detection:
-        description: 'Toggle Stack Detection stage'
-        required: false
-        type: boolean
-        default: true
-      enable_build:
-        description: 'Toggle Build stage'
-        required: false
-        type: boolean
-        default: true
-      enable_publish:
-        description: 'Toggle Docker Publish stage'
-        required: false
-        type: boolean
-        default: true
+  push:
+    branches:
+      - main
 
 jobs:
-  pipeline:
-    runs-on: ubuntu-latest
+  trigger-central-pipeline:
+    uses: ShahmeerKhan137/DevOps-Platform/.github/workflows/smart-ci.yml@main
+    with:
+      enable_checkout: true
+      enable_detection: true
+      enable_build: true
+      enable_publish: true
     permissions:
       contents: read
       packages: write
-    steps:
-      # 1. Checkout Stage
-      - name: Checkout Code
-        if: ${{ inputs.enable_checkout == true }}
-        uses: ShahmeerKhan137/DevOps-Platform/.github/actions/checkout@main
-
-      # 2. Detect Stack Stage
-      - name: Detect Technology Stack
-        if: ${{ inputs.enable_detection == true }}
-        id: detect
-        uses: ShahmeerKhan137/DevOps-Platform/.github/actions/detect-stack@main
-
-      # 3. Build Stage
-      # Note: Yeh step tabhi chalega agar build true ho aur detection bhi true ho (taake stack ka pata ho)
-      - name: Build Application
-        if: ${{ inputs.enable_build == true && (inputs.enable_detection == true || steps.detect.outputs.stack != '') }}
-        uses: ShahmeerKhan137/DevOps-Platform/.github/actions/build@main
-        with:
-          stack: ${{ steps.detect.outputs.stack || 'maven' }} # Fallback to maven if detection skipped
-
-      # 4. Docker Publish Stage
-      - name: Publish Docker Image
-        if: ${{ inputs.enable_publish == true }}
-        uses: ShahmeerKhan137/DevOps-Platform/.github/actions/docker-publish@main
-        with:
-          image_name: ${{ github.repository }}
